@@ -27,6 +27,7 @@ jobs:
 
             - name: ssh setup
               run: | 
+                sleep 5
                 ip=$(terraform output -raw public_ip)
                 mkdir -p ~/.ssh
                 echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/meinPrivateKey
@@ -36,7 +37,7 @@ jobs:
             - name: install nginx and deploy index.html
               run: |
                ip=$(terraform output -raw public_ip)
-               ssh -i ~/.ssh/meinPrivateKey ubuntu@$ip 'sudo apt install -y nginx'
+               ssh -i ~/.ssh/meinPrivateKey ubuntu@$ip 'sudo apt update && sudo apt install -y nginx'
                scp -i ~/.ssh/meinPrivateKey index.html ubuntu@$ip:/home/ubuntu/index.html
                ssh -i ~/.ssh/meinPrivateKey ubuntu@$ip "sudo mv /home/ubuntu/index.html /var/www/html/index.html"
 

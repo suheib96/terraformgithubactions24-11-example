@@ -9,9 +9,9 @@ variable "aws_instance_type" {
 }
 
 resource "aws_instance" "erste_instanz" {
-  count = 5
   instance_type = var.aws_instance_type
   ami = "ami-0a116fa7c861dd5f9"
+  key_name = "ssh-demokey"
   tags = {
     Name = "meine super coole instanz"
   }

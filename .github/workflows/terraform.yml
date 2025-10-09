@@ -25,6 +25,22 @@ jobs:
             - name: Terraform Apply
               run: terraform apply -auto-approve
 
+            - name: ssh setup
+              run: | 
+                ip=$(terraform output -raw public_ip)
+                mkdir -p ~/.ssh
+                echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/meinPrivateKey
+                chmod 400 ~/.ssh/meinPrivateKey
+                ssh-keyscan -H $ip >> ~/.ssh/known_hosts 
+            
+            - name: install nginx and deploy index.html
+              run: |
+               ip=$(terraform output -raw public_ip)
+               ssh -i ~/.ssh/meinPrivateKey ubuntu@$ip 'sudo apt install -y nginx'
+               scp -i ~/.ssh/meinPrivateKey index.html ubuntu@$ip:/home/ubuntu/index.html
+               ssh -i ~/.ssh/meinPrivateKey ubuntu@$ip "sudo mv /home/ubuntu/index.html /var/www/html/index.html"
+
+
 
     terraform-destroy:
         runs-on: ubuntu-latest

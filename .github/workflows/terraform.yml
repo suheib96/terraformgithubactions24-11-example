@@ -26,8 +26,9 @@ jobs:
               run: terraform apply -auto-approve
 
             - name: ssh setup
+            # sleep ist nur provisorisch hier, müsste optimiert werden
               run: | 
-                sleep 5
+                sleep 15 
                 ip=$(terraform output -raw public_ip)
                 mkdir -p ~/.ssh
                 echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/meinPrivateKey

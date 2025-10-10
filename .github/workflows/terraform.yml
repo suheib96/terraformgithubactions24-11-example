@@ -7,6 +7,15 @@ jobs:
         runs-on: ubuntu-latest
         if: github.event_name == 'push'
         steps:
+
+            - name: Post a message in a channel
+              uses: slackapi/slack-github-action@v2.1.1
+              with:
+                webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+                webhook-type: incoming-webhook
+                payload: |
+                    text: "🚀 Pipeline wurde soeben gestartet. Pipeline: ${{github.workflow}}"
+
             - name: Checkout
               uses: actions/checkout@v5
 
